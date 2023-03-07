@@ -19,10 +19,12 @@ app.get('/', (req, resp) => {
   resp.send("get Api is working...")
 })
 
-app.post('/register', (req, resp) => {
-  resp.send(req.body);
+app.post('/register', async (req, resp) => {
+  let user = new User(req.body);
+  let result = await user.save();
+  resp.send(result);
 })
-
-console.log("hi");
+let count = 1;
+console.log(count++);
 
 app.listen(5000);
