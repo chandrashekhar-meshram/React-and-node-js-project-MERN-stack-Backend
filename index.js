@@ -26,8 +26,13 @@ app.post('/register', async (req, resp) => {
   let user = new User(req.body);
   let result = await user.save();
   resp.send(result);
-})
+});
+
+app.post('/login', (req, resp)=> {
+  resp.send(req.body);
+});
+
 let count = 2;
 console.log(count++);
 
-app.listen(5001);
+app.listen(5000);
