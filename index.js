@@ -28,11 +28,13 @@ app.post('/register', async (req, resp) => {
   resp.send(result);
 });
 
-app.post('/login', (req, resp)=> {
-  resp.send(req.body);
+app.post('/login', async (req, resp) => {
+  let user = await User.findOne(req.body).select("-password");
+  //let user = await User.findOne(req.body).select("-password");
+  resp.send(user);
 });
 
-let count = 2;
+let count = 5;
 console.log(count++);
 
 app.listen(5000);
