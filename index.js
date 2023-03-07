@@ -2,8 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('./db/config');
 const User = require('./db/User');
+const cors = require('cors');
 const app = express();
+
 app.use(express.json());
+app.use(cors());
 
 // const connectDb = async () => {
 
@@ -24,7 +27,7 @@ app.post('/register', async (req, resp) => {
   let result = await user.save();
   resp.send(result);
 })
-let count = 1;
+let count = 2;
 console.log(count++);
 
-app.listen(5000);
+app.listen(5001);
