@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 require('./db/config');
 const User = require('./db/User');
 const app = express();
+app.use(express.json());
 
 // const connectDb = async () => {
- 
+
 //   const productSchema = new mongoose.Schema({});
 //   const product = mongoose.model('products', productSchema);
 //   const data = await product.find();
@@ -18,8 +19,10 @@ app.get('/', (req, resp) => {
   resp.send("get Api is working...")
 })
 
-app.post('/register', (req, resp)=> {
-  resp.send('register api working...');
+app.post('/register', (req, resp) => {
+  resp.send(req.body);
 })
 
-app.listen(5001);
+console.log("hi");
+
+app.listen(5000);
