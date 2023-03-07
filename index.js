@@ -29,9 +29,18 @@ app.post('/register', async (req, resp) => {
 });
 
 app.post('/login', async (req, resp) => {
-  let user = await User.findOne(req.body).select("-password");
-  //let user = await User.findOne(req.body).select("-password");
-  resp.send(user);
+  let err = { result: "No user found" };
+  
+  if (req.body.password && req.body.email) {
+    let user = await User.findOne(req.body).select("-password");
+    if (user) {
+      resp.send(user);
+    } else {
+      resp.send(err);
+    }
+  } else {
+    resp.send(err);
+  }
 });
 
 let count = 5;
