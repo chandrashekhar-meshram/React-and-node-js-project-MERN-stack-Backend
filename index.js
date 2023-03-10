@@ -44,7 +44,16 @@ app.post('/add-product', async (req, resp) => {
   resp.send(result);
 });
 
+app.get('/products', async (req, resp) => {
+  let products = await Product.find();
+  if (products.length > 0) {
+    resp.send(products)
+  } else {
+    resp.send({ result: "No Product found" })
+  }
+});
+
 let count = 5;
 console.log(count++);
 
-app.listen(5001);
+app.listen(5000);
