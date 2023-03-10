@@ -49,12 +49,13 @@ app.get('/products', async (req, resp) => {
   if (products.length > 0) {
     resp.send(products)
   } else {
-    resp.send({ result: "No Product found" })
+    resp.send({ result: "No Product found" });
   }
 });
 
-app.delete('/product/:id', (req, resp) => {
-  resp.send("delete product api working...");
+app.delete('/product/:id', async (req, resp) => {
+  const result = await Product.deleteOne({ _id: req.params.id });
+  resp.send(result);
 });
 
 let count = 5;
