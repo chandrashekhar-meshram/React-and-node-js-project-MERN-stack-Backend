@@ -53,6 +53,10 @@ app.get('/products', async (req, resp) => {
   }
 });
 
+app.delete('/product/:id', (req, resp) => {
+  resp.send("delete product api working...");
+});
+
 let count = 5;
 console.log(count++);
 
