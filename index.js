@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('./db/config');
 const User = require('./db/User');
+const Product = require('./db/Product');
 const cors = require('cors');
 const app = express();
 
