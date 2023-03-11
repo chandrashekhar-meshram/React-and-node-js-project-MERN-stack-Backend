@@ -58,7 +58,16 @@ app.delete('/product/:id', async (req, resp) => {
   resp.send(result);
 });
 
+app.get('/product/:id', async (req, resp)=> {
+  let result = await Product.findOne({_id:req.params.id});
+  if(result){
+    resp.send(result);
+  }else{
+    resp.send({result:'No Record Found'});
+  }
+})
+
 let count = 5;
 console.log(count++);
 
-app.listen(5000);
+app.listen(5001);
