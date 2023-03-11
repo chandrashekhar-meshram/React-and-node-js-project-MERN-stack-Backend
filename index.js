@@ -4,6 +4,8 @@ require('./db/config');
 const User = require('./db/User');
 const Product = require('./db/Product');
 const cors = require('cors');
+const Jwt = require('jsonwebtoken');
+const jwtKey = 'e-comm'; // do not share with any one
 const app = express();
 
 app.use(express.json());
@@ -20,7 +22,21 @@ app.post('/register', async (req, resp) => {
   // delete result.password;
   result = result.toObject();
   delete result.password
-  resp.send(result);
+  //resp.send(result);
+  
+  Jwt.sign({ result}, jwtKey, {expiresIn: "2h"}, (err, token) => {
+    if(err) {
+      resp.send("Somthing went wrong !");
+    }
+    resp.send({ result, auth: token })
+  })  
+
+  // Jwt.sign({result}, jwtKey, {expiresIn:"2h"},(err,token)=>{
+  //       if(err){
+  //           resp.send("Something went wrong")  
+  //       }
+  //       resp.send({result,auth:token})
+  //   })
 });
 
 app.post('/login', async (req, resp) => {
@@ -29,7 +45,13 @@ app.post('/login', async (req, resp) => {
   if (req.body.password && req.body.email) {
     let user = await User.findOne(req.body).select("-password");
     if (user) {
-      resp.send(user);
+      Jwt.sign({user},jwtKey, {expiresIn: "2h"}, (err, token)=> {
+        if(err) {
+          resp.send({ result: "Somthing went wrong !"})
+        }
+        resp.send({user, auth: token});
+      })
+      
     } else {
       resp.send(err);
     }
