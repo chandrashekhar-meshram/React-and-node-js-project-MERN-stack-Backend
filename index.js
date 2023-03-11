@@ -65,6 +65,14 @@ app.get('/product/:id', async (req, resp)=> {
   }else{
     resp.send({result:'No Record Found'});
   }
+});
+
+app.put('/product/:id', async (req, resp)=> {
+  let result = await Product.updateOne(
+    {_id: req.params.id},
+    {$set: req.body} // need to update data
+  )
+  resp.send(result);
 })
 
 let count = 5;
