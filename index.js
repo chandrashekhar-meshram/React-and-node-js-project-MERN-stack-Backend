@@ -103,7 +103,12 @@ app.get('/search/:key', verifyToken, async (req, resp)=> {
 
 function verifyToken(req, resp, next){
   let token = req.headers['authorization'];
-  console.log("verifyToken called => ", token);
+  if(token){
+    token = token.split(' ')[1];
+    console.log("verifyToken called => ", token);
+  }else{
+    
+  }  
   next();
 }
 
