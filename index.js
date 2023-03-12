@@ -23,13 +23,13 @@ app.post('/register', async (req, resp) => {
   result = result.toObject();
   delete result.password
   //resp.send(result);
-
-  Jwt.sign({ result }, jwtKey, { expiresIn: "2h" }, (err, token) => {
-    if (err) {
+  
+  Jwt.sign({ result}, jwtKey, {expiresIn: "2h"}, (err, token) => {
+    if(err) {
       resp.send("Somthing went wrong !");
     }
     resp.send({ result, auth: token })
-  })
+  })  
 });
 
 app.post('/login', async (req, resp) => {
@@ -38,13 +38,13 @@ app.post('/login', async (req, resp) => {
   if (req.body.password && req.body.email) {
     let user = await User.findOne(req.body).select("-password");
     if (user) {
-      Jwt.sign({ user }, jwtKey, { expiresIn: "2h" }, (err, token) => {
-        if (err) {
-          resp.send({ result: "Somthing went wrong !" })
+      Jwt.sign({user},jwtKey, {expiresIn: "2h"}, (err, token)=> {
+        if(err) {
+          resp.send({ result: "Somthing went wrong !"})
         }
-        resp.send({ user, auth: token });
+        resp.send({user, auth: token});
       })
-
+      
     } else {
       resp.send(err);
     }
@@ -59,6 +59,7 @@ app.post('/add-product', async (req, resp) => {
   resp.send(result);
 });
 
+//All Products
 app.get('/products', async (req, resp) => {
   let products = await Product.find();
   if (products.length > 0) {
@@ -68,12 +69,14 @@ app.get('/products', async (req, resp) => {
   }
 });
 
-app.delete('/product/:id', async (req, resp) => {
+//Delete Api
+app.delete('/product/:id', verifyToken, async (req, resp) => {
   const result = await Product.deleteOne({ _id: req.params.id });
   resp.send(result);
 });
 
-app.get('/product/:id', async (req, resp) => {
+//Find single product
+app.get('/product/:id', verifyToken, async (req, resp) => {
   let result = await Product.findOne({ _id: req.params.id });
   if (result) {
     resp.send(result);
@@ -82,7 +85,8 @@ app.get('/product/:id', async (req, resp) => {
   }
 });
 
-app.put('/product/:id', async (req, resp) => {
+//Update Product
+app.put('/product/:id',  async (req, resp) => {
   let result = await Product.updateOne(
     { _id: req.params.id },
     { $set: req.body } // need to update data
@@ -90,36 +94,36 @@ app.put('/product/:id', async (req, resp) => {
   resp.send(result);
 });
 
-app.get('/search/:key', verifyToken, async (req, resp) => {
+app.get('/search/:key', verifyToken, async (req, resp)=> {
   let result = await Product.find({
     "$or": [
-      { name: { $regex: req.params.key } },
-      { company: { $regex: req.params.key } },
-      { category: { $regex: req.params.key } }
+      { name: {$regex: req.params.key} },
+      { company: {$regex: req.params.key} },
+      { category: {$regex: req.params.key } }
     ]
   });
   resp.send(result);
 });
 
-function verifyToken(req, resp, next) {
+function verifyToken(req, resp, next){
   let token = req.headers['authorization'];
-  if (token) {
+  if(token){
     token = token.split(' ')[1];
     console.log("verifyToken called => ", token);
     Jwt.verify(token, jwtKey, (err, valid) => {
-      if (err) {
-        resp.send({ result: "Please provide valid token" });
-      } else {
-        next();
+      if(err) {
+         resp.send({ result: "Please provide valid token" });
+      }else{
+         next();
       }
     })
-  } else {
+  }else{
     resp.send({ result: "Please add token with header" });
-  }
-  //next();
+  }  
+  // next();
 }
 
-let count = 6;
+let count = 1;
 console.log(count++);
 
-app.listen(5000);
+app.listen(5002);
