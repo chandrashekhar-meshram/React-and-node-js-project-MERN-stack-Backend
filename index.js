@@ -102,7 +102,8 @@ app.get('/search/:key', verifyToken, async (req, resp)=> {
 });
 
 function verifyToken(req, resp, next){
-  console.log("verifyToken called");
+  let token = req.headers['authorization'];
+  console.log("verifyToken called => ", token);
   next();
 }
 
