@@ -23,13 +23,13 @@ app.post('/register', async (req, resp) => {
   result = result.toObject();
   delete result.password
   //resp.send(result);
-  
-  Jwt.sign({ result}, jwtKey, {expiresIn: "2h"}, (err, token) => {
-    if(err) {
+
+  Jwt.sign({ result }, jwtKey, { expiresIn: "2h" }, (err, token) => {
+    if (err) {
       resp.send("Somthing went wrong !");
     }
     resp.send({ result, auth: token })
-  })  
+  })
 });
 
 app.post('/login', async (req, resp) => {
@@ -38,13 +38,13 @@ app.post('/login', async (req, resp) => {
   if (req.body.password && req.body.email) {
     let user = await User.findOne(req.body).select("-password");
     if (user) {
-      Jwt.sign({user},jwtKey, {expiresIn: "2h"}, (err, token)=> {
-        if(err) {
-          resp.send({ result: "Somthing went wrong !"})
+      Jwt.sign({ user }, jwtKey, { expiresIn: "2h" }, (err, token) => {
+        if (err) {
+          resp.send({ result: "Somthing went wrong !" })
         }
-        resp.send({user, auth: token});
+        resp.send({ user, auth: token });
       })
-      
+
     } else {
       resp.send(err);
     }
@@ -90,29 +90,36 @@ app.put('/product/:id', async (req, resp) => {
   resp.send(result);
 });
 
-app.get('/search/:key', verifyToken, async (req, resp)=> {
+app.get('/search/:key', verifyToken, async (req, resp) => {
   let result = await Product.find({
     "$or": [
-      { name: {$regex: req.params.key} },
-      { company: {$regex: req.params.key} },
-      { category: {$regex: req.params.key } }
+      { name: { $regex: req.params.key } },
+      { company: { $regex: req.params.key } },
+      { category: { $regex: req.params.key } }
     ]
   });
   resp.send(result);
 });
 
-function verifyToken(req, resp, next){
+function verifyToken(req, resp, next) {
   let token = req.headers['authorization'];
-  if(token){
+  if (token) {
     token = token.split(' ')[1];
     console.log("verifyToken called => ", token);
-  }else{
-    
-  }  
-  next();
+    Jwt.verify(token, jwtKey, (err, valid) => {
+      if (err) {
+        resp.send({ result: "Please provide valid token" });
+      } else {
+        next();
+      }
+    })
+  } else {
+    resp.send({ result: "Please add token with header" });
+  }
+  //next();
 }
 
-let count = 5;
+let count = 6;
 console.log(count++);
 
 app.listen(5000);
